@@ -27,3 +27,5 @@ if(MSVC)
 else()
     install(TARGETS atmel_swi_analyzer LIBRARY DESTINATION ".")
 endif()
+
+set_post_build_destination(atmel_swi_analyzer)
