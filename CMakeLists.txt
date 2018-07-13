@@ -19,13 +19,4 @@ src/AtmelSWITypes.cpp
 src/AtmelSWITypes.h
 )
 
-add_library(atmel_swi_analyzer SHARED ${SOURCES})
-target_link_libraries(atmel_swi_analyzer PRIVATE Saleae::AnalyzerSDK)
-
-if(MSVC)
-    install(TARGETS atmel_swi_analyzer RUNTIME DESTINATION "Analyzers")
-else()
-    install(TARGETS atmel_swi_analyzer LIBRARY DESTINATION "Analyzers")
-endif()
-
-set_post_build_destination(atmel_swi_analyzer)
+add_analyzer_plugin(atmel_swi_analyzer SOURCES ${SOURCES})
