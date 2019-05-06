@@ -62,7 +62,11 @@ void AtmelSWIAnalyzerResults::GetTextsForPacketSegmentFrame(const Frame& f, Disp
 	int block_ndx(static_cast<int>(f.mData2 & 0xffffffff));
 	int block_offset(static_cast<int>(((f.mData2 >> 32) & 0xffffffff)));
 
-	const SWI_Block& block(mBlocks[block_ndx]);
+    SWI_Block block;
+    {
+        std::lock_guard<std::mutex> lock( mBlockMutex );
+        block = mBlocks.at( block_ndx );
+    }
 
 	SWI_PacketParam* param(PacketParams + f.mData1);
 
@@ -95,7 +99,7 @@ void AtmelSWIAnalyzerResults::GetTextsForPacketSegmentFrame(const Frame& f, Disp
 		{
 		AnalyzerHelpers::GetNumberString(block.Opcode, display_base, 8, number_str, BUFF_SIZE);
 
-		U8 zone = block.Data[block_offset] & 3;
+		U8 zone = block.Data.at(block_offset) & 3;
 		std::string zonestr("<unknown>");
 		if (zone == 0)
 			zonestr = "Config";
@@ -105,7 +109,7 @@ void AtmelSWIAnalyzerResults::GetTextsForPacketSegmentFrame(const Frame& f, Disp
 			zonestr = "Data";
 
 		const char* lenstr;
-		if (block.Data[block_offset] & 0x80)
+		if (block.Data.at(block_offset) & 0x80)
 			lenstr = "32 bytes";
 		else
 			lenstr = "4 bytes";
@@ -117,7 +121,7 @@ void AtmelSWIAnalyzerResults::GetTextsForPacketSegmentFrame(const Frame& f, Disp
 		}
 		break;
 	case PT_Byte:
-		AnalyzerHelpers::GetNumberString(block.Data[block_offset], display_base, 8, number_str, BUFF_SIZE);
+		AnalyzerHelpers::GetNumberString(block.Data.at(block_offset), display_base, 8, number_str, BUFF_SIZE);
 		
 		texts.push_back(std::string(param->Name) + " (" + number_str + ")");
 		texts.push_back(param->Name);
@@ -125,20 +129,20 @@ void AtmelSWIAnalyzerResults::GetTextsForPacketSegmentFrame(const Frame& f, Disp
 		break;
 
 	case PT_Status:
-		AnalyzerHelpers::GetNumberString(block.Data[block_offset], display_base, 8, number_str, BUFF_SIZE);
+		AnalyzerHelpers::GetNumberString(block.Data.at(block_offset), display_base, 8, number_str, BUFF_SIZE);
 
 		tmpstr = "<undefined>";
-		if (block.Data[block_offset] == 0x00)
+		if (block.Data.at(block_offset) == 0x00)
 			tmpstr = "Command executed successfully";
-		else if (block.Data[block_offset] == 0x01)
+		else if (block.Data.at(block_offset) == 0x01)
 			tmpstr = "Checkmac miscompare";
-		else if (block.Data[block_offset] == 0x03)
+		else if (block.Data.at(block_offset) == 0x03)
 			tmpstr = "Parse error";
-		else if (block.Data[block_offset] == 0x0F)
+		else if (block.Data.at(block_offset) == 0x0F)
 			tmpstr = "Execution error";
-		else if (block.Data[block_offset] == 0x11)
+		else if (block.Data.at(block_offset) == 0x11)
 			tmpstr = "Wake received properly";
-		else if (block.Data[block_offset] == 0xFF)
+		else if (block.Data.at(block_offset) == 0xFF)
 			tmpstr = "CRC or communication error";
 		else
 			tmpstr = "Unknown status code";
@@ -155,13 +159,13 @@ void AtmelSWIAnalyzerResults::GetTextsForPacketSegmentFrame(const Frame& f, Disp
 	case PT_DWord:
 		if (param->Type == PT_Word)
 		{
-			size_t val = (block.Data[block_offset + 1] << 8)  |  block.Data[block_offset];
+			size_t val = (block.Data.at(block_offset + 1) << 8)  |  block.Data.at(block_offset);
 			AnalyzerHelpers::GetNumberString(val, display_base, 16, number_str, BUFF_SIZE);
 		} else {
-			size_t val = (block.Data[block_offset + 3] << 24)
-							| (block.Data[block_offset + 2] << 16)
-							| (block.Data[block_offset + 1] << 8)
-							|  block.Data[block_offset];
+			size_t val = (block.Data.at(block_offset + 3) << 24)
+							| (block.Data.at(block_offset + 2) << 16)
+							| (block.Data.at(block_offset + 1) << 8)
+							|  block.Data.at(block_offset);
 			AnalyzerHelpers::GetNumberString(val, display_base, 32, number_str, BUFF_SIZE);
 		}
 

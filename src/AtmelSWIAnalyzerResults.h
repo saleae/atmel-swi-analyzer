@@ -1,6 +1,8 @@
 #ifndef ATMEL_SWI_ANALYZER_RESULTS_H
 #define ATMEL_SWI_ANALYZER_RESULTS_H
 
+#include <mutex>
+
 #include <AnalyzerResults.h>
 
 #include "AtmelSWITypes.h"
@@ -23,6 +25,7 @@ public:
 
 	size_t AddBlock(const SWI_Block& block)
 	{
+        std::lock_guard<std::mutex> lock( mBlockMutex );
 		mBlocks.push_back(block);
 		return mBlocks.size() - 1;
 	}
@@ -38,6 +41,7 @@ protected:	// vars
 	AtmelSWIAnalyzer*			mAnalyzer;
 
 	std::vector<SWI_Block>		mBlocks;
+    std::mutex mBlockMutex;
 };
 
 #endif	// ATMEL_SWI_ANALYZER_RESULTS_H
