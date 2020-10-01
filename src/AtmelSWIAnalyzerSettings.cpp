@@ -4,86 +4,86 @@
 #include "AtmelSWIAnalyzerResults.h"
 #include "AtmelSWITypes.h"
 
-#define CHANNEL_NAME		"SWI SDA"
+#define CHANNEL_NAME "SWI SDA"
 
-AtmelSWIAnalyzerSettings::AtmelSWIAnalyzerSettings()
-:	mSDAChannel(UNDEFINED_CHANNEL)
+AtmelSWIAnalyzerSettings::AtmelSWIAnalyzerSettings() : mSDAChannel( UNDEFINED_CHANNEL )
 {
-	// init the interface
-	mSDAChannelInterface.SetTitleAndTooltip(CHANNEL_NAME, "Single Wire Interface SDA");
-	mSDAChannelInterface.SetChannel(mSDAChannel);
+    // init the interface
+    mSDAChannelInterface.SetTitleAndTooltip( CHANNEL_NAME, "Single Wire Interface SDA" );
+    mSDAChannelInterface.SetChannel( mSDAChannel );
 
-	mDecodeLevelInterface.SetTitleAndTooltip("Decode level", "Level of the communication to decode");
-	mDecodeLevelInterface.AddNumber(DL_Tokens, "Tokens", "Decode only the level of tokens");
-	mDecodeLevelInterface.AddNumber(DL_Bytes, "Bytes", "Group the tokens into bytes");
-	mDecodeLevelInterface.AddNumber(DL_Packets, "Packets", "Decode the packet contents");
-	
-	// set default
-	mDecodeLevelInterface.SetNumber(DL_Packets);
+    mDecodeLevelInterface.SetTitleAndTooltip( "Decode level", "Level of the communication to decode" );
+    mDecodeLevelInterface.AddNumber( DL_Tokens, "Tokens", "Decode only the level of tokens" );
+    mDecodeLevelInterface.AddNumber( DL_Bytes, "Bytes", "Group the tokens into bytes" );
+    mDecodeLevelInterface.AddNumber( DL_Packets, "Packets", "Decode the packet contents" );
 
-	// add the interface
-	AddInterface(&mSDAChannelInterface);
-	AddInterface(&mDecodeLevelInterface);
+    // set default
+    mDecodeLevelInterface.SetNumber( DL_Packets );
 
-	// describe export
-	AddExportOption(0, "Export as text file");
-	AddExportExtension(0, "text", "txt");
+    // add the interface
+    AddInterface( &mSDAChannelInterface );
+    AddInterface( &mDecodeLevelInterface );
 
-	ClearChannels();
+    // describe export
+    AddExportOption( 0, "Export as text file" );
+    AddExportExtension( 0, "text", "txt" );
 
-	AddChannel(mSDAChannel,	CHANNEL_NAME, false);
+    ClearChannels();
+
+    AddChannel( mSDAChannel, CHANNEL_NAME, false );
 }
 
 AtmelSWIAnalyzerSettings::~AtmelSWIAnalyzerSettings()
-{}
+{
+}
 
 bool AtmelSWIAnalyzerSettings::SetSettingsFromInterfaces()
 {
-	if (mSDAChannelInterface.GetChannel() == UNDEFINED_CHANNEL)
-	{
-		SetErrorText("Please select an input for the SDA channel.");
-		return false;
-	}
+    if( mSDAChannelInterface.GetChannel() == UNDEFINED_CHANNEL )
+    {
+        SetErrorText( "Please select an input for the SDA channel." );
+        return false;
+    }
 
-	mSDAChannel = mSDAChannelInterface.GetChannel();
-	mDecodeLevel = static_cast<DecodeLevel>(static_cast<int>(mDecodeLevelInterface.GetNumber()));
+    mSDAChannel = mSDAChannelInterface.GetChannel();
+    mDecodeLevel = static_cast<DecodeLevel>( static_cast<int>( mDecodeLevelInterface.GetNumber() ) );
 
-	ClearChannels();
+    ClearChannels();
 
-	AddChannel(mSDAChannel,	CHANNEL_NAME, true);
+    AddChannel( mSDAChannel, CHANNEL_NAME, true );
 
-	return true;
+    return true;
 }
 
 void AtmelSWIAnalyzerSettings::UpdateInterfacesFromSettings()
 {
-	mSDAChannelInterface.SetChannel(mSDAChannel);
-	mDecodeLevelInterface.SetNumber(mDecodeLevel);
+    mSDAChannelInterface.SetChannel( mSDAChannel );
+    mDecodeLevelInterface.SetNumber( mDecodeLevel );
 }
 
-void AtmelSWIAnalyzerSettings::LoadSettings(const char* settings)
+void AtmelSWIAnalyzerSettings::LoadSettings( const char* settings )
 {
-	SimpleArchive text_archive;
-	text_archive.SetString( settings );
+    SimpleArchive text_archive;
+    text_archive.SetString( settings );
 
-	text_archive >> mSDAChannel;
-	int temp_dl;
-	text_archive >> temp_dl;
-	mDecodeLevel = static_cast<DecodeLevel>(temp_dl);
+    text_archive >> mSDAChannel;
+    int temp_dl;
+    text_archive >> temp_dl;
+    mDecodeLevel = static_cast<DecodeLevel>( temp_dl );
 
-	ClearChannels();
+    ClearChannels();
 
-	AddChannel(mSDAChannel, CHANNEL_NAME,	true);
+    AddChannel( mSDAChannel, CHANNEL_NAME, true );
 
-	UpdateInterfacesFromSettings();
+    UpdateInterfacesFromSettings();
 }
 
 const char* AtmelSWIAnalyzerSettings::SaveSettings()
 {
-	SimpleArchive text_archive;
+    SimpleArchive text_archive;
 
-	text_archive << mSDAChannel;
-	text_archive << mDecodeLevel;
+    text_archive << mSDAChannel;
+    text_archive << mDecodeLevel;
 
-	return SetReturnString(text_archive.GetString());
+    return SetReturnString( text_archive.GetString() );
 }

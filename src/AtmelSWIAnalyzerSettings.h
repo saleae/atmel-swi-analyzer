@@ -6,32 +6,32 @@
 
 #include "AtmelSWITypes.h"
 
-// the required level of data stream decoding 
+// the required level of data stream decoding
 enum DecodeLevel
 {
-	DL_Tokens,
-	DL_Bytes,
-	DL_Packets,
+    DL_Tokens,
+    DL_Bytes,
+    DL_Packets,
 };
 
 class AtmelSWIAnalyzerSettings : public AnalyzerSettings
 {
-public:
-	AtmelSWIAnalyzerSettings();
-	virtual ~AtmelSWIAnalyzerSettings();
+  public:
+    AtmelSWIAnalyzerSettings();
+    virtual ~AtmelSWIAnalyzerSettings();
 
-	virtual bool SetSettingsFromInterfaces();
-	virtual void LoadSettings(const char* settings);
-	virtual const char* SaveSettings();
+    virtual bool SetSettingsFromInterfaces();
+    virtual void LoadSettings( const char* settings );
+    virtual const char* SaveSettings();
 
-	void UpdateInterfacesFromSettings();
+    void UpdateInterfacesFromSettings();
 
-	Channel		mSDAChannel;
-	DecodeLevel	mDecodeLevel;
+    Channel mSDAChannel;
+    DecodeLevel mDecodeLevel;
 
-protected:
-	AnalyzerSettingInterfaceChannel		mSDAChannelInterface;
-	AnalyzerSettingInterfaceNumberList	mDecodeLevelInterface;
+  protected:
+    AnalyzerSettingInterfaceChannel mSDAChannelInterface;
+    AnalyzerSettingInterfaceNumberList mDecodeLevelInterface;
 };
 
-#endif	// ATMEL_SWI_ANALYZER_SETTINGS_H
+#endif // ATMEL_SWI_ANALYZER_SETTINGS_H

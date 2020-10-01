@@ -9,33 +9,32 @@ class AtmelSWIAnalyzerSettings;
 
 class AtmelSWISimulationDataGenerator
 {
-public:
-	AtmelSWISimulationDataGenerator();
-	~AtmelSWISimulationDataGenerator();
+  public:
+    AtmelSWISimulationDataGenerator();
+    ~AtmelSWISimulationDataGenerator();
 
-	void Initialize(U32 simulation_sample_rate, AtmelSWIAnalyzerSettings* settings);
-	U32 GenerateSimulationData( U64 newest_sample_requested, U32 sample_rate, SimulationChannelDescriptor** simulation_channels );
+    void Initialize( U32 simulation_sample_rate, AtmelSWIAnalyzerSettings* settings );
+    U32 GenerateSimulationData( U64 newest_sample_requested, U32 sample_rate, SimulationChannelDescriptor** simulation_channels );
 
-protected:
-	AtmelSWIAnalyzerSettings*	mSettings;
-	U32							mSimulationSampleRateHz;
+  protected:
+    AtmelSWIAnalyzerSettings* mSettings;
+    U32 mSimulationSampleRateHz;
 
-	void CreateSWITransaction(U8 BlockSent[], U8 BlockReceived[]);
+    void CreateSWITransaction( U8 BlockSent[], U8 BlockReceived[] );
 
-	void OutputTokenWake();
-	void OutputTokenZero();
-	void OutputTokenOne();
-	void OutputByte(U8 byte);
-	void OutputFlag(SWI_Flag flag);
-	void OutputIOBlock(U8* pByte);
+    void OutputTokenWake();
+    void OutputTokenZero();
+    void OutputTokenOne();
+    void OutputByte( U8 byte );
+    void OutputFlag( SWI_Flag flag );
+    void OutputIOBlock( U8* pByte );
 
-protected:
+  protected:
+    ClockGenerator mClockGenerator;
 
-	ClockGenerator mClockGenerator;
+    SimulationChannelDescriptorGroup mSWISimulationChannels;
 
-	SimulationChannelDescriptorGroup	mSWISimulationChannels;
-
-	SimulationChannelDescriptor*		mSDA;
+    SimulationChannelDescriptor* mSDA;
 };
 
-#endif	// ATMEL_SWI_SIMULATION_DATA_GENERATOR_H
+#endif // ATMEL_SWI_SIMULATION_DATA_GENERATOR_H
