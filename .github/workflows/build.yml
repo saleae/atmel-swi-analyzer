@@ -46,6 +46,10 @@ jobs:
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
         cmake --build ${{github.workspace}}/build
         ldd -v ${{github.workspace}}/build/Analyzers/*.so
+        pwd
+        echo "${{github.workspace}}"
+        echo "find!"
+        find .
     - name: Upload Linux build
       uses: actions/upload-artifact@v3
       with:
