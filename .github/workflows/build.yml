@@ -47,7 +47,7 @@ jobs:
         cmake --build ${{github.workspace}}/build
         ldd -v ${{github.workspace}}/build/Analyzers/*.so
     - name: Upload Linux build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: linux
         path: ${{github.workspace}}/build/Analyzers/*.so
