@@ -46,9 +46,6 @@ jobs:
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
         cmake --build ${{github.workspace}}/build
         ldd -v ${{github.workspace}}/build/Analyzers/*.so
-      env:
-        CC:   gcc-9
-        CXX:  g++-9
     - name: Upload Linux build
       uses: actions/upload-artifact@v2
       with:
