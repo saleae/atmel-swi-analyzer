@@ -43,6 +43,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: |
+        pwd
+        find .
+        cmake --version
+        gcc --version
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
         ldd -v build/Analyzers/*.so
