@@ -38,6 +38,22 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     container:
+      image: ubuntu:18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build
+        ldd -v build/Analyzers/*.so
+    - name: Upload Linux build
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux
+        path: ${{github.workspace}}/build/Analyzers/*.so
+  manylinux:
+    runs-on: ubuntu-latest
+    container:
       image: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
@@ -46,15 +62,6 @@ jobs:
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
         ldd -v build/Analyzers/*.so
-        pwd
-        echo "${{github.workspace}}"
-        echo "find!"
-        find .
-    - name: Upload Linux build
-      uses: actions/upload-artifact@v2
-      with:
-        name: linux
-        path: ${{github.workspace}}/build/Analyzers/*.so
   publish:
     needs: [windows, macos, linux]
     runs-on: ubuntu-latest
