@@ -52,7 +52,7 @@ jobs:
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
-    - name: Upload Linux x86_64 build
+    - name: Upload Linux build
       uses: actions/upload-artifact@v2
       with:
         name: linux
