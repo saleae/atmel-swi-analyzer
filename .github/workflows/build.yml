@@ -48,11 +48,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-        cmake --build ${{github.workspace}}/build
-      env:
-        CC:   gcc-10
-        CXX:  g++-10
+        ./ci/linux/docker-build.sh
+        ./ci/linux/docker-run.sh
     - name: Upload Linux build
       uses: actions/upload-artifact@v2
       with:
