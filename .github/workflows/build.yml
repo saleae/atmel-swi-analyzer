@@ -44,14 +44,13 @@ jobs:
         path: ${{github.workspace}}/build/arm64/Analyzers/*.so
   linux:
     runs-on: ubuntu-latest
-    container:
-      image: quay.io/pypa/manylinux2014_x86_64
     steps:
     - uses: actions/checkout@v2
     - name: Build
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release
-        cmake --build build
+        ./ci/linux/docker-build.sh
+        ./ci/linux/docker-run.sh
+        find .
     - name: Upload Linux build
       uses: actions/upload-artifact@v2
       with:
