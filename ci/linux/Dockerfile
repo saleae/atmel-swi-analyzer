@@ -19,7 +19,7 @@ RUN test -n "$GID"
 RUN groupadd -g ${GID} docker
 RUN useradd -m -u ${UID} -g docker docker
 
-# Update cmake
+# Update for cmake
 RUN apt-get update
 
 # Add repository for latest cmake
@@ -37,6 +37,7 @@ RUN apt-get update
 RUN apt-get -y install cmake git
 RUN apt-get -y install gcc-10 g++-10
 
+# set CXX and CC so cmake uses gcc 10 as the default compiler.
 ENV CXX=g++-10
 ENV CC=gcc-10
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This script runs the build.sh script within the docker image, mounting the current repository as a volume.
+
 # Path to THIS script
 SCRIPT_PATH=$(dirname $0)
 SCRIPT_PATH=$(readlink -e $SCRIPT_PATH)
