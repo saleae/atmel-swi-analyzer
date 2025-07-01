@@ -46,16 +46,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Build Docker image
+    - name: Pull pre-built builder image
+      run: docker pull ghcr.io/saleae/analyzer-build-image:latest
+    - name: Build inside container
       run: |
-        docker build -t analyzer-build -f ./ci/linux/Dockerfile .
-    - name: Extract build artifacts from container
-      run: |
-        # Create a container from the image (but don't run it)
-        container_id=$(docker create analyzer-build)
-        # Copy the build output from the container to the host
-        docker cp "$container_id:/app/build/Analyzers" ./build
-        docker rm "$container_id"
+        docker run --rm \
+          -v ${{ github.workspace }}:/app \
+          -w /app \
+          ghcr.io/saleae/ubuntu20-gcc9-builder:latest \
+          bash -c 'cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build'
     - name: Upload Linux build
       uses: actions/upload-artifact@v4
       with:
