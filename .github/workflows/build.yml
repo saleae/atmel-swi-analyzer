@@ -66,7 +66,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: linux
-        path: ./build/*.so
+        path: ${{github.workspace}}/build/Analyzers/*.so
   publish:
     needs: [windows, macos, linux]
     runs-on: ubuntu-latest
