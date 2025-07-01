@@ -46,15 +46,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Build
+    - name: Build Docker image
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-        cmake --build ${{github.workspace}}/build
+        docker build -t analyzer-build -f ./ci/linux/Dockerfile .
+    - name: Extract build artifacts from container
+      run: |
+        # Create a container from the image (but don't run it)
+        container_id=$(docker create analyzer-build)
+        # Copy the build output from the container to the host
+        docker cp "$container_id:/app/build/Analyzers" ./build
+        docker rm "$container_id"
     - name: Upload Linux build
       uses: actions/upload-artifact@v4
       with:
         name: linux
-        path: ${{github.workspace}}/build/Analyzers/*.so
+        path: ./build/*.so
   publish:
     needs: [windows, macos, linux]
     runs-on: ubuntu-latest
